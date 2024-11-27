@@ -1,0 +1,20 @@
+Why Docker
+make model API more scalable
+Make a productionized API
+WHAT IS Docker Container
+shifting from A to B need to shift everything
+missing something is a problem
+Create a container and put all inside it and take to B and unpack
+Irrespective of the o/s and hardware my model works on another machine irrespective of environment, isolation,portability,build once and easy to apply.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Steps
+Create a model---Jupyter
+make it pickle(deploy)
+open Spyder for making flask
+use Postman for API testing
+After all testing 
+Download Flasgger(anaconda prompt pip install flagger)
+
+
+
+
