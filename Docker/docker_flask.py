@@ -5,64 +5,85 @@ Spyder Editor
 This is a temporary script file.
 """
 
-from flask import Flask,request
-import pandas as pd
+
+from flask import Flask, request
 import numpy as np
 import pickle
-app=Flask(__name__)#Which point to start
-#execution of the line cause the running of the app
-pickle_in = open(r'C:\Users\jissm\1_JUPYTER_PROJECTS\Machine_learning\Docker\classifier.pkl', 'rb')
+import pandas as pd
+import flasgger
+from flasgger import Swagger
 
-#pickle_in=open('classifier.pkl','rb')
+app=Flask(__name__)
+Swagger(app)
+
+pickle_in = open(r'C:\Users\jissm\1_JUPYTER_PROJECTS\Machine_learning\Docker\classifier.pkl', 'rb')
 classifier=pickle.load(pickle_in)
-#WSGI-WEB SERVER GATE INTERFACE
-@app.route('/')# move to this app first trigger this functions
+
+@app.route('/')
 def welcome():
-    return "Welcome all"
-@app.route('/predict')#Decorater
-def predict_note_autentication():#define variance name
-## Retrieve and convert the input parameters
-    variance=request.args.get('variance')
-    skewness=request.args.get('skewness')
-    curtosis=request.args.get('curtosis')
-    entropy=request.args.get('entropy')
-    prediction=classifier.predict([[variance,skewness,curtosis,entropy]])
-    return "The predicted values is"+str(prediction)
+    return "Welcome All"
+
+@app.route('/predict',methods=["Get"])
+def predict_note_authentication():
     
-#http://127.0.0.1:5000/predict?variance=2&skewness=3&curtosis=2&entropy=1
-@app.route('/predict_file', methods=["POST"])
-def predict_note_file():
+    """Let's Authenticate the Banks Note 
+    This is using docstrings for specifications.
+    ---
+    parameters:  
+      - name: variance
+        in: query
+        type: number
+        required: true
+      - name: skewness
+        in: query
+        type: number
+        required: true
+      - name: curtosis
+        in: query
+        type: number
+        required: true
+      - name: entropy
+        in: query
+        type: number
+        required: true
+    responses:
+        200:
+            description: The output values
+        
     """
-    Authenticate the Bank Notes using a file.
+    variance=request.args.get("variance")
+    skewness=request.args.get("skewness")
+    curtosis=request.args.get("curtosis")
+    entropy=request.args.get("entropy")
+    prediction=classifier.predict([[variance,skewness,curtosis,entropy]])
+    print(prediction)
+    return "Hello The answer is"+str(prediction)
+
+@app.route('/predict_file',methods=["POST"])
+def predict_note_file():
+    """Let's Authenticate the Banks Note 
+    This is using docstrings for specifications.
     ---
     parameters:
       - name: file
         in: formData
         type: file
         required: true
+      
     responses:
         200:
             description: The output values
+        
     """
-    try:
-        # Get the uploaded file
-        uploaded_file = request.files.get("file")
-        if not uploaded_file:
-            return "Error: No file uploaded. Please provide a valid CSV file.", 400
-
-        # Read the file into a Pandas DataFrame
-        df_test = pd.read_csv(uploaded_file)
-        print(df_test.head())  # Debugging
-
-        # Make predictions
-        prediction = classifier.predict(df_test)
-        return "The predicted values for CSV are: " + str(list(prediction))
-    except Exception as e:
-        return f"Error: {e}", 500
-
+    df_test=pd.read_csv(request.files.get("file"))
+    print(df_test.head())
+    prediction=classifier.predict(df_test)
+    
+    return str(list(prediction))
 
 if __name__=='__main__':
     app.run()
     
+        
     
 
